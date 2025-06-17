@@ -1,0 +1,62 @@
+{
+  "rules": {
+    "formatting": {
+      "indent": 2,
+      "quotes": "single",
+      "semi": true,
+      "trailingComma": "es5",
+      "printWidth": 80
+    },
+    "imports": {
+      "order": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between": "always"
+    },
+    "naming": {
+      "components": "PascalCase",
+      "functions": "camelCase",
+      "variables": "camelCase",
+      "constants": "UPPER_CASE",
+      "types": "PascalCase",
+      "interfaces": "PascalCase"
+    },
+    "react": {
+      "jsx": "react-jsx",
+      "hooks": {
+        "rules-of-hooks": "error",
+        "exhaustive-deps": "warn"
+      }
+    },
+    "typescript": {
+      "strict": true,
+      "noImplicitAny": true,
+      "strictNullChecks": true
+    },
+    "nextjs": {
+      "pages": {
+        "directory": "src/app",
+        "fileNaming": "kebab-case"
+      },
+      "components": {
+        "directory": "src/components",
+        "fileNaming": "PascalCase"
+      },
+      "styles": {
+        "directory": "src/styles",
+        "preprocessor": "tailwind"
+      }
+    },
+    "git": {
+      "commit": {
+        "type": ["feat", "fix", "docs", "style", "refactor", "test", "chore"],
+        "scope": ["component", "page", "api", "config", "style", "test"]
+      }
+    }
+  }
+} 

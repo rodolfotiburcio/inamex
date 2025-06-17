@@ -1,0 +1,344 @@
+Project Requirements {
+  database_type: 'PostgreSQL'
+  Note: 'Requirements and purchase order management system'
+}
+
+// State Tables
+Table ArticleState {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  order integer [default: 0]
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_article_state_name']
+  }
+}
+
+Table ArticleOrderStatus {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  order integer [default: 0]
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_article_order_status_name']
+  }
+}
+
+Table OrderStatus {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  order integer [default: 0]
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_order_status_name']
+  }
+}
+
+Table ProjectState {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  order integer [default: 0]
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_project_state_name']
+  }
+}
+
+Table RequirementState {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  order integer [default: 0]
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_requirement_state_name']
+  }
+}
+
+// Main Tables
+Table Address {
+  id integer [pk, increment]
+  street varchar
+  exterior_number varchar
+  interior_number varchar [null]
+  neighborhood varchar
+  postal_code varchar
+  city varchar
+  state varchar
+  country varchar [default: 'Mexico']
+  notes text [null]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (postal_code) [name: 'idx_address_postal_code']
+  }
+}
+
+Table Article {
+  id integer [pk, increment]
+  requirement_id integer [ref: > Requirement.id, null]
+  requirement_consecutive integer [null]
+  quantity decimal
+  unit varchar
+  brand varchar
+  model varchar
+  dimensions varchar
+  state_id integer [ref: > ArticleState.id]
+  notes text [null]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (requirement_id) [name: 'idx_article_requirement']
+    (state_id) [name: 'idx_article_state']
+    (brand, model) [name: 'idx_article_brand_model']
+  }
+}
+
+Table ArticleOrder {
+  id integer [pk, increment]
+  order_id integer [ref: > Order.id]
+  article_id integer [ref: > Article.id, null]
+  status_id integer [ref: > ArticleOrderStatus.id]
+  position integer
+  quantity decimal
+  unit varchar
+  brand varchar
+  model varchar
+  unit_price decimal
+  total decimal
+  notes text [null]
+  indexes {
+    (order_id) [name: 'idx_article_order_order']
+    (article_id) [name: 'idx_article_order_article']
+    (status_id) [name: 'idx_article_order_status']
+  }
+}
+
+Table Client {
+  id integer [pk, increment]
+  name varchar
+  indexes {
+    (name) [name: 'idx_client_name']
+  }
+}
+
+Table PaymentCondition {
+  id integer [pk, increment]
+  name varchar [unique]
+  description text [null]
+  text text [note: 'Payment condition text']
+  active boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_payment_condition_name']
+  }
+}
+
+Table Order {
+  id integer [pk, increment]
+  supplier_id integer [ref: > Supplier.id]
+  address text
+  bank_details text
+  date timestamp [default: `now()`]
+  delivery_time varchar
+  payment_condition_id integer [ref: > PaymentCondition.id]
+  currency varchar
+  supplier_reference varchar [null]
+  acceptance_id integer [ref: > User.id, null]
+  requested_by_id integer [ref: > User.id, null]
+  reviewed_by_id integer [ref: > User.id, null]
+  approved_by_id integer [ref: > User.id, null]
+  subtotal decimal
+  vat decimal
+  discount decimal [default: 0]
+  total decimal
+  notes text [null]
+  shipping_address_id integer [ref: > Address.id]
+  status_id integer [ref: > OrderStatus.id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (date) [name: 'idx_order_date']
+    (supplier_id) [name: 'idx_order_supplier']
+    (supplier_reference) [name: 'idx_order_reference']
+    (shipping_address_id) [name: 'idx_order_shipping_address']
+    (payment_condition_id) [name: 'idx_order_payment_condition']
+    (status_id) [name: 'idx_order_status']
+  }
+}
+
+Table Photo {
+  id integer [pk, increment]
+  path varchar
+  thumbnail varchar
+  report_id integer [ref: > Report.id]
+  indexes {
+    (report_id) [name: 'idx_photo_report']
+  }
+}
+
+Table Project {
+  id integer [pk, increment]
+  number varchar [unique]
+  name varchar
+  date timestamp [default: `now()`]
+  state_id integer [ref: > ProjectState.id]
+  responsible_id integer [ref: > User.id, null]
+  client_id integer [ref: > Client.id, null]
+  budget_id integer [ref: > Budget.id, null]
+  indexes {
+    (number) [name: 'idx_project_number']
+    (date) [name: 'idx_project_date']
+    (state_id) [name: 'idx_project_state']
+    (client_id) [name: 'idx_project_client']
+    (budget_id) [name: 'idx_project_budget']
+  }
+}
+
+Table Report {
+  id integer [pk, increment]
+  date timestamp [default: `now()`]
+  title varchar
+  responsible_id integer [ref: > User.id, null]
+  project_id integer [ref: > Project.id, null]
+  description text
+  duration interval
+  dead_time interval
+  dead_time_cause text [null]
+  indexes {
+    (date) [name: 'idx_report_date']
+    (project_id) [name: 'idx_report_project']
+    (responsible_id) [name: 'idx_report_responsible']
+  }
+}
+
+Table Requirement {
+  id integer [pk, increment]
+  project_id integer [ref: > Project.id, null]
+  request_date timestamp [default: `now()`]
+  requested_by integer [ref: > User.id, null]
+  state_id integer [ref: > RequirementState.id]
+  closing_date timestamp [null]
+  indexes {
+    (project_id) [name: 'idx_requirement_project']
+    (request_date) [name: 'idx_requirement_request_date']
+    (state_id) [name: 'idx_requirement_state']
+    (requested_by) [name: 'idx_requirement_requested_by']
+  }
+}
+
+Table Supplier {
+  id integer [pk, increment]
+  address_id integer [ref: > Address.id]
+  address text
+  bank_details text
+  delivery_time varchar
+  payment_condition_id integer [ref: > PaymentCondition.id]
+  currency varchar
+  notes text [null]
+  indexes {
+    (currency) [name: 'idx_supplier_currency']
+    (payment_condition_id) [name: 'idx_supplier_payment_condition']
+    (address_id) [name: 'idx_supplier_address']
+  }
+}
+
+Table DedicatedTime {
+  id integer [pk, increment]
+  user_id integer [ref: > User.id]
+  time interval
+  report_id integer [ref: > Report.id]
+  indexes {
+    (user_id) [name: 'idx_dedicated_time_user']
+    (report_id) [name: 'idx_dedicated_time_report']
+  }
+}
+
+Table User {
+  id integer [pk, increment]
+  username varchar [unique]
+  full_name varchar
+  password_hash varchar
+  indexes {
+    (username) [name: 'idx_user_username']
+  }
+}
+
+Table Contact {
+  id integer [pk, increment]
+  name varchar
+  email varchar [null]
+  phone varchar [null]
+  position varchar [null]
+  client_id integer [ref: > Client.id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_contact_name']
+    (client_id) [name: 'idx_contact_client']
+  }
+}
+
+Table Budget {
+  id integer [pk, increment]
+  number integer
+  name varchar
+  client_id integer [ref: > Client.id]
+  contact_id integer [ref: > Contact.id]
+  delivery_date timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+  indexes {
+    (name) [name: 'idx_budget_name']
+    (client_id) [name: 'idx_budget_client']
+    (contact_id) [name: 'idx_budget_contact']
+    (delivery_date) [name: 'idx_budget_delivery_date']
+  }
+}
+
+// Relationships
+Ref: Article.requirement_id > Requirement.id
+Ref: Article.state_id > ArticleState.id
+Ref: ArticleOrder.order_id > Order.id
+Ref: ArticleOrder.article_id > Article.id
+Ref: ArticleOrder.status_id > ArticleOrderStatus.id
+Ref: Order.supplier_id > Supplier.id
+Ref: Order.shipping_address_id > Address.id
+Ref: Order.payment_condition_id > PaymentCondition.id
+Ref: Order.status_id > OrderStatus.id
+Ref: Order.acceptance_id > User.id
+Ref: Order.requested_by_id > User.id
+Ref: Order.reviewed_by_id > User.id
+Ref: Order.approved_by_id > User.id
+Ref: Photo.report_id > Report.id
+Ref: Project.state_id > ProjectState.id
+Ref: Project.responsible_id > User.id
+Ref: Project.client_id > Client.id
+Ref: Project.budget_id > Budget.id
+Ref: Report.responsible_id > User.id
+Ref: Report.project_id > Project.id
+Ref: Requirement.project_id > Project.id
+Ref: Requirement.state_id > RequirementState.id
+Ref: Requirement.requested_by > User.id
+Ref: Supplier.address_id > Address.id
+Ref: Supplier.payment_condition_id > PaymentCondition.id
+Ref: DedicatedTime.user_id > User.id
+Ref: DedicatedTime.report_id > Report.id
+Ref: Contact.client_id > Client.id
+Ref: Budget.client_id > Client.id
+Ref: Budget.contact_id > Contact.id 

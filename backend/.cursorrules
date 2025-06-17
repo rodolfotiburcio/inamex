@@ -1,0 +1,85 @@
+# Project Rules and Best Practices
+
+## Naming Conventions
+- Use English for all code, including:
+  - Variable names
+  - Function names
+  - Class names
+  - Field names
+  - Comments
+  - Error messages
+- Follow Python naming conventions:
+  - snake_case for variables and functions
+  - PascalCase for classes
+  - UPPER_CASE for constants
+
+## Model Definitions
+- All models should inherit from SQLModel
+- Use proper typing hints
+- Define relationships using SQLModel's Relationship
+- Use Optional for nullable fields
+- Use Field for database-specific configurations
+- Include proper foreign key constraints
+- Use descriptive field names that reflect their purpose
+
+## API Endpoints
+- Use FastAPI's APIRouter for route organization
+- Implement proper response models
+- Include proper error handling with HTTPException
+- Use descriptive endpoint paths
+- Follow RESTful conventions for HTTP methods
+- Return appropriate HTTP status codes
+- Validate input data using Pydantic models
+
+## Testing
+- Create comprehensive test suites
+- Use helper functions for test setup and cleanup
+- Test both success and failure cases
+- Clean up test data after each test
+- Use descriptive test names
+- Follow the pattern:
+  1. Setup test data
+  2. Make request
+  3. Verify response
+  4. Clean up
+- Use proper assertions
+- Test all CRUD operations
+- Test edge cases and error conditions
+
+## Database Operations
+- Use context managers for database sessions
+- Commit changes before refreshing objects
+- Handle foreign key constraints properly
+- Clean up related objects in the correct order
+- Use proper transaction management
+
+## Code Organization
+- Keep related code together
+- Use proper imports
+- Follow the project's directory structure
+- Maintain consistent code style
+- Add appropriate comments and docstrings
+- Keep functions focused and single-purpose
+
+## Error Handling
+- Use specific error messages
+- Handle edge cases gracefully
+- Validate input data
+- Check for existence of related objects
+- Use appropriate HTTP status codes
+- Provide helpful error messages
+
+## Security
+- Never expose sensitive information
+- Validate all input data
+- Use proper authentication and authorization
+- Follow security best practices
+- Handle sensitive data appropriately
+
+## Documentation
+- Add docstrings to functions and classes
+- Document complex logic
+- Keep comments up to date
+- Use clear and concise language
+- Document API endpoints
+- Include examples where helpful 
